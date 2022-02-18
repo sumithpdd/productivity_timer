@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 class ProductivityButton extends StatelessWidget {
-  const ProductivityButton(
+  ProductivityButton(
       {Key? key,
       required this.color,
       required this.text,
-      required this.size,
+      this.size = 80,
       required this.onPressed})
       : super(key: key);
   final Color color;
   final String text;
-  final double size;
+  double size;
   final VoidCallback onPressed;
 
   @override

@@ -2,16 +2,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:productivity_timer/models/timer.dart';
 
+import '../models/timermodel.dart';
 import '../widgets/widgets.dart';
 
 class TimerHomePage extends StatelessWidget {
-  const TimerHomePage({Key? key}) : super(key: key);
+  TimerHomePage({Key? key}) : super(key: key);
   void emptyMethod() {}
   final double defaultPadding = 5.0;
+  CountDownTimer timer = CountDownTimer();
 
   @override
   Widget build(BuildContext context) {
+    timer.startWork();
     return Scaffold(
       appBar: AppBar(
         title: Text('My work timer'),
@@ -58,16 +62,23 @@ class TimerHomePage extends StatelessWidget {
                   )),
                 ],
               ),
-              Expanded(
-                child: CircularPercentIndicator(
-                  radius: availableWidth / 2,
-                  lineWidth: 10.0,
-                  percent: 1,
-                  center: Text("30:00",
-                      style: Theme.of(context).textTheme.displayMedium),
-                  progressColor: Color(0xff009688),
-                ),
-              ),
+              StreamBuilder(
+                  initialData: '00:00',
+                  stream: timer.stream(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    TimerModel timer = (snapshot.data == '00:00')
+                        ? TimerModel('00:00', 1)
+                        : snapshot.data;
+                    return Expanded(
+                        child: CircularPercentIndicator(
+                      radius: availableWidth / 2,
+                      lineWidth: 10.0,
+                      percent: timer.percent,
+                      center: Text(timer.time,
+                          style: Theme.of(context).textTheme.headline4),
+                      progressColor: Color(0xff009688),
+                    ));
+                  }),
               Padding(
                 padding: EdgeInsets.all(defaultPadding),
               ),
@@ -76,23 +87,18 @@ class TimerHomePage extends StatelessWidget {
                   padding: EdgeInsets.all(defaultPadding),
                 ),
                 Expanded(
-                  child: ProductivityButton(
-                    color: Color(0xff212121),
-                    text: 'Stop',
-                    onPressed: emptyMethod,
-                    size: 80,
-                  ),
-                ),
+                    child: ProductivityButton(
+                        color: Color(0xff212121),
+                        text: 'Stop',
+                        onPressed: () => timer.stopTimer())),
                 Padding(
                   padding: EdgeInsets.all(defaultPadding),
                 ),
                 Expanded(
                     child: ProductivityButton(
-                  color: Color(0xff009688),
-                  text: 'Restart',
-                  onPressed: emptyMethod,
-                  size: 80,
-                )),
+                        color: Color(0xff009688),
+                        text: 'Restart',
+                        onPressed: () => timer.startTimer())),
                 Padding(
                   padding: EdgeInsets.all(defaultPadding),
                 ),
