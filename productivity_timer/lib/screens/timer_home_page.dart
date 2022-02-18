@@ -6,6 +6,7 @@ import 'package:productivity_timer/models/timer.dart';
 
 import '../models/timermodel.dart';
 import '../widgets/widgets.dart';
+import 'settings_screen.dart';
 
 class TimerHomePage extends StatelessWidget {
   TimerHomePage({Key? key}) : super(key: key);
@@ -13,12 +14,32 @@ class TimerHomePage extends StatelessWidget {
   final double defaultPadding = 5.0;
   CountDownTimer timer = CountDownTimer();
 
+  void goToSettings(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => SettingsScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
     timer.startWork();
+    final List<PopupMenuItem<String>> menuItems = <PopupMenuItem<String>>[];
+    menuItems.add(PopupMenuItem(
+      value: 'Settings',
+      child: Text('Settings'),
+    ));
+
     return Scaffold(
       appBar: AppBar(
         title: Text('My work timer'),
+        actions: [
+          PopupMenuButton<String>(itemBuilder: (BuildContext context) {
+            return menuItems.toList();
+          }, onSelected: (s) {
+            if (s == 'Settings') {
+              goToSettings(context);
+            }
+          })
+        ],
       ),
       body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
