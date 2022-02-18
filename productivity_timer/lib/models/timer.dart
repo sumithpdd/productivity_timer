@@ -10,6 +10,8 @@ class CountDownTimer {
   late Duration _fullTime;
 
   int work = 30;
+  int shortBreak = 5;
+  int longBreak = 20;
 
   String returnTime(Duration t) {
     String minutes = (t.inMinutes < 10)
@@ -54,5 +56,11 @@ class CountDownTimer {
     if (time.inSeconds > 0) {
       _isActive = true;
     }
+  }
+
+  void startBreak(bool isShort) {
+    _radius = 1;
+    time = Duration(minutes: (isShort) ? shortBreak : longBreak, seconds: 0);
+    _fullTime = time;
   }
 }
